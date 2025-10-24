@@ -1,0 +1,13 @@
+python3 --version 3.12.3
+pip --version 24
+
+sudo apt update
+sudo apt upgrade -y
+sudo apt install -y python3-venv
+
+cd /camwatch-collector
+
+python3 -m venv .venv
+source .venv/bin/activate
+
+pip install requests

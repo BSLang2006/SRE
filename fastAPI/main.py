@@ -221,7 +221,7 @@ async def sweeper():
                         "end": iso_z(end),
                         "duration_sec": round(duration, 3),
                     })
-                    rec["status"] = "up"
+#                   rec["status"] = "up"
                     rec["first_down_at"] = None
                     rec["last_seen"] = None
                     rec["last_change_at"] = end            # NEW
@@ -348,3 +348,43 @@ async def incidents_history(
             })
     rows.sort(key=lambda r: r.get("end") or r.get("start"), reverse=True)
     return {"ok": True, "items": rows[offset:offset+limit], "total": len(rows)}
+
+@app.post("/snapshot")
+async def snapshot(payload: Dict[str, Any]):
+    site = payload.get("site") or "unknown"
+    gen_at = parse_iso_utc(payload.get("generated_at"))
+    incoming = payload.get("devices", []) or []
+
+    # (Optional) ignore out-of-order snapshots per site
+    # keep a per-site latest_ts dict if you want:
+    # if gen_at <= LATEST_SNAPSHOT_TS.get(site, datetime.min.replace(tzinfo=UTC)): return {"ok": True}
+
+    incoming_macs = set()
+    for d in incoming:
+        mac = d.get("mac")
+        if not mac: 
+            continue
+        incoming_macs.add(mac)
+        rec = ensure_record(mac)
+        # inventory
+        rec["site"] = d.get("site") or site or rec.get("site")
+        rec["type"] = d.get("type") or rec.get("type")
+        rec["name"] = d.get("name") or rec.get("name")
+        rec["ip"]   = d.get("ip")   or rec.get("ip")
+        rec["status"] = d.get("status", rec["status"])
+
+        # status transition (reuse your existing logic)
+        event = (d.get("status") or "unknown").lower()
+        occurred_dt = gen_at
+        # open/close exactly like /state does
+        # (call a tiny helper that contains your 'down'/'up' branches)
+
+    # (Optional) “replace” semantics:
+    # for any existing record with this site not in incoming_macs, mark up/close incident now
+    # for mac, rec in list(STATE.items()):
+    #     if rec.get("site") == site and mac not in incoming_macs:
+    #         if rec["status"] == "down":  ... close with end=gen_at
+    #         rec["status"] = "up"; rec["first_down_at"]=None; rec["last_seen"]=None; rec["last_change_at"]=gen_at
+
+    return {"ok": True, "state": serialize_state()}
+

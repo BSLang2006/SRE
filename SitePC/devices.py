@@ -1,4 +1,6 @@
 DEVICES = {
+    "ac:cc:8e:ab:35:27": {"name": "RealCamera01", "ip": "10.10.1.47", "type": "camera", "site": "Test Bench"},
+
     "00:1A:2B:3C:50:00": {"name": "OfficeCam01", "ip": "10.10.1.11",  "type": "camera", "site": "Office"},
     "00:1A:2B:3C:50:01": {"name": "OfficeCam02", "ip": "10.10.1.12",  "type": "camera", "site": "Office"},
     "00:1A:2B:3C:50:02": {"name": "OfficeCam03", "ip": "10.10.1.13",  "type": "camera", "site": "Office"},

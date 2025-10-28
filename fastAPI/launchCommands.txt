@@ -1,3 +1,9 @@
+ssh -i "F:\SRE\camwatch-key.pem" ubuntu@54.196.221.164
+su - brandon
+7teenKids
+
+cd camwatch-collector
+
 python3 --version 3.12.3
 pip --version 24
 
@@ -11,3 +17,8 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 pip install requests
+
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+
+pip list

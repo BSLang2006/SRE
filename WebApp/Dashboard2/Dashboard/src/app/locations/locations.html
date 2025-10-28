@@ -14,25 +14,28 @@
           </tr>
         </thead>
         <tbody>
-<tr *ngFor="let r of locationRows">
-  <td>
-    <a [routerLink]="['/locations', r.site]" class="site-link">
-  {{ r.site }}
-</a>
+@for (r of locationRows; track $index) {
+  <tr
+    (click)="go(r.site)"
+    (keydown.enter)="go(r.site)"
+    tabindex="0"
+    style="cursor: pointer"
+  >
+    <td>{{ r.site }}</td>
+    <td>{{ r.total }}</td>
+    <td>
+      <span class="badge"
+            [class.badge--ok]="r.down === 0"
+            [class.badge--bad]="r.down > 0">
+        {{ r.down }}
+      </span>
+    </td>
+    <td>{{ r.lastName || '—' }}</td>
+    <td>{{ r.lastTs || '—' }}</td>
+  </tr>
+}
 
-  </td>
-  <td>{{ r.total }}</td>
-  <td>
-    <span
-      class="badge"
-      [class.badge--ok]="r.down === 0"
-      [class.badge--bad]="r.down > 0">
-      {{ r.down }}
-    </span>
-  </td>
-  <td>{{ r.lastName || '—' }}</td>
-  <td>{{ r.lastTs || '—' }}</td>
-</tr>
+
 
         </tbody>
       </table>

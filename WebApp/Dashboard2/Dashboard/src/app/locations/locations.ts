@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { RouterOutlet } from '@angular/router';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 type DeviceRow = {
   mac: string;
@@ -30,17 +30,22 @@ type LocationRow = {
 @Component({
   selector: 'app-locations',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink],
+  imports: [CommonModule, RouterOutlet], // removed RouterLink
   templateUrl: './locations.html',
   styleUrls: ['./locations.css'],
 })
 export class Locations implements OnInit {
+  private router = inject(Router);
   private http = inject(HttpClient);
-  private base = 'http://54.196.221.164:8000';
 
+  base = 'http://54.196.221.164:8000';
   loading = false;
   error = '';
   locationRows: LocationRow[] = [];
+
+  go(site: string) {
+    this.router.navigate(['/locations', site]);
+  }
 
   ngOnInit() {
     this.load();
@@ -73,7 +78,6 @@ export class Locations implements OnInit {
       const downs = list.filter(d => d.status === 'down');
       const down = downs.length;
 
-      // Pick the device with the most recent first_down_at (if available)
       let lastName: string | undefined;
       let lastIp: string | undefined;
       let lastTs: string | undefined;
@@ -92,7 +96,6 @@ export class Locations implements OnInit {
       rows.push({ site, total, down, lastName, lastIp, lastTs });
     }
 
-    // Sort: sites with downs first, then alphabetically
     rows.sort((a, b) => (b.down - a.down) || a.site.localeCompare(b.site));
     return rows;
   }

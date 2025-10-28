@@ -1,0 +1,73 @@
+<div class="page">
+  <div class="topbar">
+    <a routerLink="/locations" class="crumb">← Locations</a>
+    <h2 class="title">{{ site() }} — Devices</h2>
+
+    <div class="controls" *ngIf="rows().length">
+      <label>Sort:</label>
+      <button class="sort"
+              [class.active]="sortBy()==='status'"
+              (click)="setSort('status')">
+        Status <span class="arrow">{{ sortBy()==='status' ? (sortDir()==='asc' ? '↑' : '↓') : '' }}</span>
+      </button>
+      <button class="sort"
+              [class.active]="sortBy()==='last_change_at'"
+              (click)="setSort('last_change_at')">
+        Last Change <span class="arrow">{{ sortBy()==='last_change_at' ? (sortDir()==='asc' ? '↑' : '↓') : '' }}</span>
+      </button>
+      <button class="sort"
+              [class.active]="sortBy()==='type'"
+              (click)="setSort('type')">
+        Type <span class="arrow">{{ sortBy()==='type' ? (sortDir()==='asc' ? '↑' : '↓') : '' }}</span>
+      </button>
+      <button class="sort"
+              [class.active]="sortBy()==='name'"
+              (click)="setSort('name')">
+        Name <span class="arrow">{{ sortBy()==='name' ? (sortDir()==='asc' ? '↑' : '↓') : '' }}</span>
+      </button>
+      <button class="sort"
+              [class.active]="sortBy()==='ip'"
+              (click)="setSort('ip')">
+        IP <span class="arrow">{{ sortBy()==='ip' ? (sortDir()==='asc' ? '↑' : '↓') : '' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="statusline" *ngIf="loading()">Loading…</div>
+  <div class="statusline bad" *ngIf="error()">{{ error() }}</div>
+
+  <div class="tablewrap" *ngIf="!loading() && rows().length">
+    <table class="grid">
+      <thead>
+        <tr>
+          <th (click)="setSort('status')">Status</th>
+          <th (click)="setSort('last_change_at')">Last Change</th>
+          <th (click)="setSort('type')">Type</th>
+          <th (click)="setSort('name')">Name</th>
+          <th (click)="setSort('ip')">IP</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of sorted(); trackBy: trackMac">
+          <td>
+            <span class="badge"
+                  [class.badge--ok]="d.status==='up'"
+                  [class.badge--bad]="d.status==='down'">
+              {{ d.status }}
+            </span>
+          </td>
+          <td>{{ d.last_change_at || '—' }}</td>
+          <td>{{ d.type || '—' }}</td>
+          <td>{{ d.name || d.mac }}</td>
+          <td>{{ d.ip || '—' }}</td>
+          <td>{{ d.last_failure_reason || '—' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="empty" *ngIf="!loading() && !rows().length">
+    No devices for {{ site() }}.
+  </div>
+</div>

@@ -1,0 +1,46 @@
+
+<main>
+  <section class="locations">
+    <h2>Location Status</h2>
+    <div class="table-wrap" *ngIf="locationRows?.length; else empty">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Site</th>
+            <th>Devices</th>
+            <th>Down</th>
+            <th>Last Failed Device</th>
+            <th>Last Failed At</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr *ngFor="let r of locationRows">
+  <td>
+    <a [routerLink]="['/locations', r.site]" class="site-link">
+  {{ r.site }}
+</a>
+
+  </td>
+  <td>{{ r.total }}</td>
+  <td>
+    <span
+      class="badge"
+      [class.badge--ok]="r.down === 0"
+      [class.badge--bad]="r.down > 0">
+      {{ r.down }}
+    </span>
+  </td>
+  <td>{{ r.lastName || '—' }}</td>
+  <td>{{ r.lastTs || '—' }}</td>
+</tr>
+
+        </tbody>
+      </table>
+    </div>
+    <router-outlet></router-outlet>
+
+    <ng-template #empty>
+      <div class="empty">No locations yet.</div>
+    </ng-template>
+  </section>
+</main>

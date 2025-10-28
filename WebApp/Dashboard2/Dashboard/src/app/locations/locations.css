@@ -1,0 +1,30 @@
+.locations { max-width: 1000px; margin: 24px auto; padding: 0 16px; }
+.locations__header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+.locations__header h1 { margin: 0; font-size: 1.5rem; }
+.meta { color: #6b7280; font-size: 0.95rem; }
+
+.table-wrap { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl thead { background: #f9fafb; }
+.tbl th, .tbl td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #f1f5f9; }
+.tbl th { font-weight: 600; color: #374151; font-size: 0.9rem; }
+.tbl tbody tr:hover { background: #f8fafc; }
+
+.site-name { font-weight: 600; color: #111827; }
+.device-name { font-weight: 500; color: #111827; }
+.device-ip { font-size: 0.85rem; color: #6b7280; }
+
+.badge { display: inline-block; min-width: 28px; padding: 2px 8px; border-radius: 999px; text-align: center; font-weight: 600; }
+.badge--ok { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+.badge--bad { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+.empty { text-align: center; color: #6b7280; padding: 24px; }
+/* --- Page Header --- */
+.site-link {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+}
+.site-link:hover {
+  text-decoration: underline;
+}

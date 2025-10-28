@@ -1,0 +1,44 @@
+<main class="wrap">
+  <section class="head">
+    <h2>Failed Devices</h2>
+  </section>
+
+  <div class="alert" *ngIf="error">{{ error }}</div>
+
+  <div *ngIf="rows?.length; else empty" class="table-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Site</th>
+          <th>Device</th>
+          <th>IP</th>
+          <th>Type</th>
+          <th>First Down</th>
+          <th>Last Seen</th>
+          <th>Min Down</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of rows">
+          <td class="site">{{ r.site }}</td>
+          <td class="name">{{ r.name || '—' }}</td>
+          <td class="ip">{{ r.ip || '—' }}</td>
+          <td class="type">{{ r.type || '—' }}</td>
+          <td>
+            <time *ngIf="r.firstDownAt as ts" [attr.datetime]="ts">{{ ts | date:'MMM d, y, h:mm a' }}</time>
+            <span *ngIf="!r.firstDownAt">—</span>
+          </td>
+          <td>
+            <time *ngIf="r.lastSeen as ls" [attr.datetime]="ls">{{ ls | date:'MMM d, y, h:mm a' }}</time>
+            <span *ngIf="!r.lastSeen">—</span>
+          </td>
+          <td class="mins">{{ r.minutesDown ?? '—' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #empty>
+    <div class="empty">All clear — no failed devices.</div>
+  </ng-template>
+</main>

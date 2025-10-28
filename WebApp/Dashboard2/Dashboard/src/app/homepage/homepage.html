@@ -1,0 +1,63 @@
+<main>
+    <section class="status">
+      <h2>System Status</h2>
+      <div id="statusError" aria-live="polite"></div>
+    </section>
+
+    <section class="metrics" aria-label="Key Metrics">
+<a routerLink="/locations" class="metric-link">
+  <article class="metric">
+    <h3>Locations Monitored</h3>
+    <p id="locationsCount">{{ locationsCount }}</p>
+  </article>
+</a>
+
+      <article class="metric">
+        <h3>Devices Monitored</h3>
+        <p id="devicesTotal">{{ devicesTotal }}</p>
+      </article>
+<a routerLink="/failed-devices" class="metric-link">
+  <article class="metric">
+    <h3>Devices Down</h3>
+    <p id="devicesDown">{{ devicesDown }}</p>
+  </article>
+</a>
+
+<article class="metric gauge-card"
+         [ngClass]="{
+           ok: devicesUpPct >= 95,
+           warn: devicesUpPct >= 80 && devicesUpPct < 95,
+           bad: devicesUpPct < 80
+         }">
+  <h3>Devices Up</h3>
+
+  <div class="gauge-wrap">
+    <svg class="gauge-svg" viewBox="0 0 120 120" aria-label="Devices up gauge">
+      <!-- Background ring -->
+      <circle class="gauge-track"
+              [attr.r]="radius" cx="60" cy="60"></circle>
+
+      <!-- Progress ring (rotated so 0 starts at top) -->
+      <g transform="rotate(-90,60,60)">
+        <circle class="gauge-bar"
+                [attr.r]="radius" cx="60" cy="60"
+                [attr.stroke-dasharray]="circumference"
+                [attr.stroke-dashoffset]="circumference * (1 - devicesUpPct / 100)">
+        </circle>
+      </g>
+    </svg>
+
+    <div class="gauge-center">
+      <div class="gauge-value">{{ devicesUpPct }}%</div>
+      <div class="gauge-sub"></div>
+    </div>
+  </div>
+</article>
+    </section>
+
+    <section class="recent-failures">
+      <h2>Recent Failures</h2>
+        @for (f of failures.slice(0,5); track $index) {
+          <li>{{ f.site }} — {{ f.name }} — {{ f.ip }} — {{ f.type }}</li>}
+    </section>
+</main>

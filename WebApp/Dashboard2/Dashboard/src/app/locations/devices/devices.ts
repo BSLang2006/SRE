@@ -30,6 +30,7 @@ type SortKey = 'status' | 'last_change_at' | 'type' | 'name' | 'ip';
   styleUrls: ['./devices.css'],
 })
 export class Devices {
+  private api = 'http://54.196.221.164:8000';
   constructor(private route: ActivatedRoute, private http: HttpClient) {
     // react to :site changes
     effect(() => {
@@ -88,7 +89,7 @@ export class Devices {
     this.loading.set(true);
     this.error.set('');
     this.http
-      .get<DevicesResp>(`/devices?site=${encodeURIComponent(site)}&limit=1000`)
+      .get<DevicesResp>(`${this.api}/devices?site=${encodeURIComponent(site)}&limit=1000`)
       .subscribe({
         next: (res) => {
           if (!res?.ok) {

@@ -1,0 +1,23 @@
+\<a [routerLink]="['/locations', site]">← Back to {{ site }}</a>
+
+<div *ngIf="loading">Loading…</div>
+<div *ngIf="error">{{ error }}</div>
+
+<div *ngIf="!loading && !error">
+  <ng-container *ngIf="device; else notFound">
+    <h2>{{ device.name || device.mac }}</h2>
+
+    <p><strong>Site:</strong> {{ device.site }}</p>
+    <p><strong>MAC:</strong> {{ device.mac }}</p>
+    <p><strong>IP:</strong> {{ device.ip || '—' }}</p>
+    <p><strong>Status:</strong> {{ device.status }}</p>
+    <p><strong>Type:</strong> {{ device.type || '—' }}</p>
+    <p><strong>Last Change:</strong> {{ device.last_change_at || '—' }}</p>
+    <p><strong>Last Seen:</strong> {{ device.last_seen || '—' }}</p>
+    <p><strong>Reason:</strong> {{ device.last_failure_reason || '—' }}</p>
+  </ng-container>
+
+  <ng-template #notFound>
+    <p>No device found for MAC {{ mac }} at {{ site }}.</p>
+  </ng-template>
+</div>

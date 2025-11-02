@@ -22,3 +22,10 @@
 .badge--bad { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
 
 .empty { padding: 24px; text-align: center; color: #64748b; }
+.row-link {
+  cursor: pointer;
+}
+
+.row-link:hover {
+  background-color: #f1f5f9;
+}

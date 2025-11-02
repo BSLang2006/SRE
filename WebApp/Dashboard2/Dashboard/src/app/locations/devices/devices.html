@@ -49,20 +49,24 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let d of sorted(); trackBy: trackMac">
-          <td>
-            <span class="badge"
-                  [class.badge--ok]="d.status==='up'"
-                  [class.badge--bad]="d.status==='down'">
-              {{ d.status }}
-            </span>
-          </td>
-          <td>{{ d.last_change_at || '—' }}</td>
-          <td>{{ d.type || '—' }}</td>
-          <td>{{ d.name || d.mac }}</td>
-          <td>{{ d.ip || '—' }}</td>
-          <td>{{ d.last_failure_reason || '—' }}</td>
-        </tr>
+       <tr 
+  *ngFor="let d of sorted(); trackBy: trackMac"
+  [routerLink]="['/locations', site(), d.mac]"
+  class="row-link">
+  <td>
+    <span class="badge"
+          [class.badge--ok]="d.status==='up'"
+          [class.badge--bad]="d.status==='down'">
+      {{ d.status }}
+    </span>
+  </td>
+  <td>{{ d.last_change_at || '—' }}</td>
+  <td>{{ d.type || '—' }}</td>
+  <td>{{ d.name || d.mac }}</td>
+  <td>{{ d.ip || '—' }}</td>
+  <td>{{ d.last_failure_reason || '—' }}</td>
+</tr>
+
       </tbody>
     </table>
   </div>

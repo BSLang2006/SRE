@@ -19,3 +19,49 @@
 .ip, .type { color: #374151; }
 .mins { font-variant-numeric: tabular-nums; }
 .empty { text-align: center; color: #6b7280; padding: 24px; }
+/* Make rows clickable */
+.row-link {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+/* Hover over full row */
+.row-link:hover {
+  background-color: #f8fafc;
+}
+
+/* Site column link */
+.site a {
+  color: #2563eb; /* blue */
+  text-decoration: underline;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Prevent row hover color when hovering just site link */
+.site a:hover {
+  color: #1e40af;
+}
+
+/* Make the rest of the row feel like a link but NOT look like the site link */
+.row-link td:not(.site) {
+  color: inherit;
+}
+
+/* When hovering anywhere except the site cell, show pointer */
+.row-link td:not(.site):hover {
+  background-color: #f1f5f9;
+}
+/* Make site link clean and non-ugly */
+.site a {
+  background: #eef2ff;
+  color: #3730a3;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.site a:hover {
+  background: #e0e7ff;
+}

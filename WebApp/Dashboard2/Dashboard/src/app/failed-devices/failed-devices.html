@@ -15,25 +15,33 @@
           <th>Type</th>
           <th>First Down</th>
           <th>Last Seen</th>
-          <th>Min Down</th>
+          <th>Min Down</th>    
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let r of rows">
-          <td class="site">{{ r.site }}</td>
-          <td class="name">{{ r.name || '—' }}</td>
-          <td class="ip">{{ r.ip || '—' }}</td>
-          <td class="type">{{ r.type || '—' }}</td>
-          <td>
-            <time *ngIf="r.firstDownAt as ts" [attr.datetime]="ts">{{ ts | date:'MMM d, y, h:mm a' }}</time>
-            <span *ngIf="!r.firstDownAt">—</span>
-          </td>
-          <td>
-            <time *ngIf="r.lastSeen as ls" [attr.datetime]="ls">{{ ls | date:'MMM d, y, h:mm a' }}</time>
-            <span *ngIf="!r.lastSeen">—</span>
-          </td>
-          <td class="mins">{{ r.minutesDown ?? '—' }}</td>
-        </tr>
+       <tr
+  *ngFor="let r of rows"
+  class="row-link"
+  (click)="goToDevice(r.site, r.mac)"
+>
+  <td class="site" (click)="goToSite(r.site); $event.stopPropagation()">
+    <a>{{ r.site }}</a>
+  </td>
+  <td class="name">{{ r.name || '—' }}</td>
+  <td class="ip">{{ r.ip || '—' }}</td>
+  <td class="type">{{ r.type || '—' }}</td>
+  <td>
+    <time *ngIf="r.firstDownAt as ts" [attr.datetime]="ts">{{ ts | date:'MMM d, y, h:mm a' }}</time>
+    <span *ngIf="!r.firstDownAt">—</span>
+  </td>
+  <td>
+    <time *ngIf="r.lastSeen as ls" [attr.datetime]="ls">{{ ls | date:'MMM d, y, h:mm a' }}</time>
+    <span *ngIf="!r.lastSeen">—</span>
+  </td>
+  <td class="mins">{{ r.minutesDown ?? '—' }}</td>
+</tr>
+
+
       </tbody>
     </table>
   </div>

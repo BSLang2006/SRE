@@ -1,7 +1,8 @@
-import { Component, signal, computed, effect } from '@angular/core';
+import { Component, computed, signal, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { makeSorter, SortDir } from '../../shared/sort';
 
 type DeviceRow = {
   mac: string;
@@ -18,6 +19,7 @@ type DeviceRow = {
   latency_ms?: number | null;
 };
 
+// ✅ This was missing → now it's back.
 type DevicesResp = { ok: boolean; items: DeviceRow[]; total: number };
 
 type SortKey = 'status' | 'last_change_at' | 'type' | 'name' | 'ip';
@@ -25,65 +27,63 @@ type SortKey = 'status' | 'last_change_at' | 'type' | 'name' | 'ip';
 @Component({
   selector: 'app-site-devices',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, HttpClientModule], // ✅ Now HttpClient works here
   templateUrl: './devices.html',
   styleUrls: ['./devices.css'],
 })
-export class Devices {
+export class Devices implements OnInit, OnDestroy {
   private api = 'http://54.196.221.164:8000';
-  constructor(private route: ActivatedRoute, private http: HttpClient) {
-    // react to :site changes
-    effect(() => {
-      const s = this.route.snapshot.paramMap.get('site') ?? '';
-      this.site.set(s);
-      this.fetch(s);
-    });
-  }
+  private http = inject(HttpClient);
+  private route = inject(ActivatedRoute);
+  private sub: any;
 
-  // state
   site = signal<string>('');
   loading = signal<boolean>(false);
   error = signal<string>('');
   rows = signal<DeviceRow[]>([]);
+
   sortBy = signal<SortKey>('status');
-  sortDir = signal<'asc' | 'desc'>('desc'); // show downs first by default
+  sortDir = signal<SortDir>('desc');
 
-  // derived (sorted) rows
-  sorted = computed(() => {
-    const key = this.sortBy();
-    const dir = this.sortDir();
-    const mul = dir === 'asc' ? 1 : -1;
-    const copy = [...this.rows()];
-    copy.sort((a, b) => {
-      const av = (a as any)[key] ?? '';
-      const bv = (b as any)[key] ?? '';
-      // status custom order: down < unknown < up (so down first when desc)
-      if (key === 'status') {
-        const rank = { down: 2, unknown: 1, up: 0 } as any;
-        return (rank[av] - rank[bv]) * mul;
-      }
-      // date sort for last_change_at
-      if (key === 'last_change_at') {
-        const at = av ? Date.parse(av) : 0;
-        const bt = bv ? Date.parse(bv) : 0;
-        return (at - bt) * mul;
-      }
-      // strings fallback (case-insensitive)
-      return String(av).toLowerCase().localeCompare(String(bv).toLowerCase()) * mul;
-    });
-    return copy;
-  });
+  private accessors: Record<SortKey, (r: DeviceRow) => unknown> = {
+    status: r => r.status,
+    last_change_at: r => (r.last_change_at ? Date.parse(r.last_change_at) : 0),
+    type: r => r.type ?? '',
+    name: r => r.name ?? r.mac,
+    ip: r => r.ip ?? '',
+  };
 
-  setSort(key: SortKey) {
-    if (this.sortBy() === key) {
+  setSort(col: SortKey) {
+    if (this.sortBy() === col) {
       this.sortDir.set(this.sortDir() === 'asc' ? 'desc' : 'asc');
     } else {
-      this.sortBy.set(key);
-      this.sortDir.set(key === 'status' ? 'desc' : 'asc');
+      this.sortBy.set(col);
+      this.sortDir.set(col === 'status' ? 'desc' : 'asc');
     }
   }
 
+  sorted = computed(() =>
+    this.rows().slice().sort(
+      makeSorter(
+        { by: this.sortBy(), dir: this.sortDir() },
+        this.accessors
+      )
+    )
+  );
+
   trackMac = (_: number, r: DeviceRow) => r.mac;
+
+  ngOnInit() {
+    const initial = this.route.snapshot.paramMap.get('site') ?? '';
+    this.site.set(initial);
+    this.fetch(initial);
+
+    this.sub = this.route.paramMap.subscribe(pm => {
+      const s = pm.get('site') ?? '';
+      this.site.set(s);
+      this.fetch(s);
+    });
+  }
 
   private fetch(site: string) {
     this.loading.set(true);
@@ -101,5 +101,9 @@ export class Devices {
         error: () => this.error.set('Request failed'),
         complete: () => this.loading.set(false),
       });
+  }
+
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
   }
 }

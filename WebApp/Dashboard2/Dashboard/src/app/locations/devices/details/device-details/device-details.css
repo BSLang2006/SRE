@@ -1,0 +1,21 @@
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #4b5563;             /* neutral grey */
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.back-link:hover {
+  background: #f3f4f6;        /* light hover bg */
+  color: #1f2937;             /* darker text */
+}
+
+.back-link:active {
+  background: #e5e7eb;
+}

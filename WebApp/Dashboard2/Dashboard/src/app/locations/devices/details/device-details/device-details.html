@@ -1,4 +1,4 @@
-\<a [routerLink]="['/locations', site]">← Back to {{ site }}</a>
+<a [routerLink]="['/locations', site]" class="back-link">← Back to {{ site }}</a>
 
 <div *ngIf="loading">Loading…</div>
 <div *ngIf="error">{{ error }}</div>

@@ -52,7 +52,7 @@ PING_TIMEOUT_SEC = 2
 SWEEP_INTERVAL_SEC = 300                     # ~5 minutes
 
 def now_iso():
-    return dt.datetime.now(dt.UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
+    return dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 def is_up(host: str) -> bool:
     sys = platform.system().lower()
